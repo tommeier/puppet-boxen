@@ -15,7 +15,7 @@ describe 'boxen::osx_defaults' do
 
   it do
     should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-      with(:command => "/usr/bin/defaults write #{domain} #{key} '#{value}'")
+      with(:command => "/usr/bin/defaults write #{domain} '#{key}' '#{value}'")
   end
 
   context "with a host" do
@@ -32,7 +32,7 @@ describe 'boxen::osx_defaults' do
 
       it do
         should contain_exec("osx_defaults write #{host} #{domain}:#{key}=>#{value}").
-          with(:command => "/usr/bin/defaults -currentHost write #{domain} #{key} '#{value}'")
+          with(:command => "/usr/bin/defaults -currentHost write #{domain} '#{key}' '#{value}'")
       end
     end
 
@@ -41,7 +41,7 @@ describe 'boxen::osx_defaults' do
 
       it do
         should contain_exec("osx_defaults write #{host} #{domain}:#{key}=>#{value}").
-          with(:command => "/usr/bin/defaults -host #{host} write #{domain} #{key} '#{value}'")
+          with(:command => "/usr/bin/defaults -host #{host} write #{domain} '#{key}' '#{value}'")
       end
     end
   end
