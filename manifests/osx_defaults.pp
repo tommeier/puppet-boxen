@@ -22,14 +22,13 @@ define boxen::osx_defaults(
         fail('Cannot ensure present without domain, key, and value attributes')
       }
 
-      $write_cmd = $type ? {
-        undef   => shellquote($default_cmds, 'write', $domain, $key, $value),
-        default => shellquote($default_cmds, 'write', $domain, $key, "-${type}", $value)
+      if ($type == undef) and (($value == true) or ($value == false)) {
+        $type_ = 'bool'
+      } else {
+        $type_ = $type
       }
 
-      $read_cmd = shellquote($default_cmds, 'read', $domain, $key)
-
-      if ($type =~ /^bool/) {
+      if ($type_ =~ /^bool/) {
         $checkvalue = $value ? {
           /(true|yes)/ => '1',
           /(false|no)/ => '0',
@@ -37,6 +36,13 @@ define boxen::osx_defaults(
       } else {
         $checkvalue = $value
       }
+
+      $write_cmd = $type_ ? {
+        undef   => shellquote($default_cmds, 'write', $domain, $key, $value),
+        default => shellquote($default_cmds, 'write', $domain, $key, "-${type}", $value)
+      }
+
+      $read_cmd = shellquote($default_cmds, 'read', $domain, $key)
 
       exec { "osx_defaults write ${host} ${domain}:${key}=>${value}":
         command => $write_cmd,
