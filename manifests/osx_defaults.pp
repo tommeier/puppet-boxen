@@ -9,18 +9,11 @@ define boxen::osx_defaults(
   $user   = undef,
   $type   = undef,
 ) {
-  $defaults_cmd = '/usr/bin/defaults'
-
-  $host_option = $host ? {
-    'currentHost' => '-currentHost',
-    undef         => undef,
-    default       => [ '-host', $host ]
-  }
-
-  if $host_option == undef {
-    $default_cmds = [ $defaults_cmd ]
-  } else {
-    $default_cmds = [ $defaults_cmd, $host_option ]
+  $defaults_cmd  = '/usr/bin/defaults'
+  $default_cmds  = $host ? {
+    'currentHost' => [ $defaults_cmd, '-currentHost' ],
+    undef         => [ $defaults_cmd ],
+    default       => [ $defaults_cmd, '-host', $host ]
   }
 
   case $ensure {
