@@ -22,24 +22,22 @@ define boxen::osx_defaults(
         fail('Cannot ensure present without domain, key, and value attributes')
       }
 
-      if ($type == undef) and (($value == true) or ($value == false)) {
+      if (($type == undef) and (($value == true) or ($value == false))) or ($type =~ /^bool/) {
         $type_ = 'bool'
-      } else {
-        $type_ = $type
-      }
 
-      if ($type_ =~ /^bool/) {
         $checkvalue = $value ? {
           /(true|yes)/ => '1',
           /(false|no)/ => '0',
         }
+
       } else {
+        $type_      = $type
         $checkvalue = $value
       }
 
       $write_cmd = $type_ ? {
-        undef   => shellquote($default_cmds, 'write', $domain, $key, $value),
-        default => shellquote($default_cmds, 'write', $domain, $key, "-${type}", $value)
+        undef   => shellquote($default_cmds, 'write', $domain, $key, "${value}"),
+        default => shellquote($default_cmds, 'write', $domain, $key, "-${type_}", "${value}")
       }
 
       $read_cmd = shellquote($default_cmds, 'read', $domain, $key)

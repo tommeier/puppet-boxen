@@ -15,7 +15,7 @@ describe 'boxen::osx_defaults' do
 
   it do
     should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-      with(:command => "/usr/bin/defaults write #{domain} '#{key}' '#{value}'")
+      with(:command => "/usr/bin/defaults write #{domain} #{key} #{value}")
   end
 
   context 'with quoting for shell values' do
@@ -48,15 +48,6 @@ describe 'boxen::osx_defaults' do
           with(:command => "/usr/bin/defaults -host #{host} delete \"#{domain}\" \"#{key}\"")
       end
     end
-
-    context 'with a key with spaces' do
-      let(:key) { 'test key' }
-
-      it 'quotes the key' do
-        should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-          with(:command => "/usr/bin/defaults write #{domain} '#{key}' '#{value}'")
-      end
-    end
   end
 
   context 'boolean handling' do
@@ -72,7 +63,7 @@ describe 'boxen::osx_defaults' do
       let(:value) { 'yes' }
       it 'converts yes to 1 for checking' do
         should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-          with(:unless => "/usr/bin/defaults read #{domain} '#{key}' && (/usr/bin/defaults read #{domain} '#{key}' | awk '{ exit $0 != \"1\" }')")
+          with(:unless => "/usr/bin/defaults read #{domain} #{key} && (/usr/bin/defaults read #{domain} #{key} | awk '{ exit $0 != \"1\" }')")
       end
     end
 
@@ -80,7 +71,7 @@ describe 'boxen::osx_defaults' do
       let(:value) { 'no' }
       it 'converts no to 0 for checking' do
         should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-          with(:unless => "/usr/bin/defaults read #{domain} '#{key}' && (/usr/bin/defaults read #{domain} '#{key}' | awk '{ exit $0 != \"0\" }')")
+          with(:unless => "/usr/bin/defaults read #{domain} #{key} && (/usr/bin/defaults read #{domain} #{key} | awk '{ exit $0 != \"0\" }')")
       end
     end
 
@@ -88,7 +79,7 @@ describe 'boxen::osx_defaults' do
       let(:value) { 'true' }
       it 'converts true to 1 for checking' do
         should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-          with(:unless => "/usr/bin/defaults read #{domain} '#{key}' && (/usr/bin/defaults read #{domain} '#{key}' | awk '{ exit $0 != \"1\" }')")
+          with(:unless => "/usr/bin/defaults read #{domain} #{key} && (/usr/bin/defaults read #{domain} #{key} | awk '{ exit $0 != \"1\" }')")
       end
     end
 
@@ -96,7 +87,7 @@ describe 'boxen::osx_defaults' do
       let(:value) { 'false' }
       it 'converts false to 0 for checking' do
         should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").
-          with(:unless => "/usr/bin/defaults read #{domain} '#{key}' && (/usr/bin/defaults read #{domain} '#{key}' | awk '{ exit $0 != \"0\" }')")
+          with(:unless => "/usr/bin/defaults read #{domain} #{key} && (/usr/bin/defaults read #{domain} #{key} | awk '{ exit $0 != \"0\" }')")
       end
     end
   end
@@ -112,7 +103,7 @@ describe 'boxen::osx_defaults' do
 
     it do
       should contain_exec("osx_defaults write  #{domain}:#{key}=>#{value}").with(
-        :command => "/usr/bin/defaults write #{domain} '#{key}' -bool '#{value}'"
+        :command => "/usr/bin/defaults write #{domain} #{key} -bool #{value}"
       )
     end
   end
@@ -131,7 +122,7 @@ describe 'boxen::osx_defaults' do
 
       it do
         should contain_exec("osx_defaults write #{host} #{domain}:#{key}=>#{value}").
-          with(:command => "/usr/bin/defaults -currentHost write #{domain} '#{key}' '#{value}'")
+          with(:command => "/usr/bin/defaults -currentHost write #{domain} #{key} #{value}")
       end
     end
 
@@ -140,7 +131,7 @@ describe 'boxen::osx_defaults' do
 
       it do
         should contain_exec("osx_defaults write #{host} #{domain}:#{key}=>#{value}").
-          with(:command => "/usr/bin/defaults -host #{host} write #{domain} '#{key}' '#{value}'")
+          with(:command => "/usr/bin/defaults -host #{host} write #{domain} #{key} #{value}")
       end
     end
   end
